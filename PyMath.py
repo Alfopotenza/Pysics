@@ -86,6 +86,3 @@ def atan2(y, x):
             return base_angle + pi
         else:
             return base_angle - pi
-
-
-print(rad2deg(atan2(1, -1)))

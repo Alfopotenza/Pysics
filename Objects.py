@@ -10,7 +10,7 @@ class Vector:
     def __str__(self):
         return str(f"module: {self.module}, direction: {self.direction}")
 
-    def show(self, ax: plt.Axes, origin: [float, float], color: str):
+    def show(self, ax: plt.Axes, origin: [float, float], color: str) -> object:
         ax.quiver(origin[0], origin[1], self.module * cos(self.direction), self.module * sin(self.direction),
                   scale_units='xy', scale=1, angles='xy', color=color)
 
@@ -46,20 +46,25 @@ class Vector:
         elif self.direction < 180:
             return self.direction == (other.direction + 180)
 
+class Object:
+    def __init__(self, environment, **_vars):
+        #here all the variables that can exist will be added
+        self.acceleration = None
+        self.mass = _vars.get("mass")
+        self.force = _vars.get("force")
+        self.env = environment
+    def show(self, _ax, origin, color, size):
+        return _ax.add_patch(plt.Circle(origin, size, color = color))
+    def newton_first_law(self):
+        self.acceleration = self.env.gravity
+        if self.force == 0:
+            return Vector(self.mass * self.acceleration, 270)
+        if self.mass == 0:
+            return self.force / self.acceleration
+        if self.acceleration == 0:
+            return self.force / self.mass
+class Environment:
+    def __init__(self, **_vars):
+        self.gravity = _vars.get("gravity")
 
-a = Vector(10, 0)
-b = Vector(10, 90)
-c = Vector(20, 270)
 
-print(a + b + c)
-_origin = [0, 0]
-fig, axes = plt.subplots()
-a.show(axes, _origin, "y")
-b.show(axes, _origin, "r")
-c.show(axes, _origin, "k")
-(a + b).show(axes, _origin, "g")
-(a + b + c).show(axes, _origin, "b")
-axes.set_xlim([-40, 40])
-axes.set_ylim([-40, 40])
-plt.grid()
-plt.show()
